@@ -44,7 +44,7 @@ class _SearchViewState extends State<SearchPage> {
     if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       page++;
-      print("page:" + page.toString());
+
       fetchPhotos();
     }
   }

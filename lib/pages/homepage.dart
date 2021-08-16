@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage> {
     if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       page++;
-      print("page:" + page.toString());
       fetchPhotos();
     }
   }
@@ -107,7 +106,6 @@ class _HomePageState extends State<HomePage> {
                       textInputAction: TextInputAction.search,
                       onSubmitted: (String value) {
                         if (value.trim().isEmpty) {
-                          print("Null");
                           Fluttertoast.showToast(msg: "Search field cannot be empty");
                         } else {
                           Navigator.push(
