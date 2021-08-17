@@ -2,19 +2,21 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallpaper/utils/responsive.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
 
 class ImageDetail extends StatefulWidget {
-  const ImageDetail({Key key, this.image, this.photographer}) : super(key: key);
+  const ImageDetail({Key key, this.image, this.photographer, this.photographerUrl}) : super(key: key);
 
-  final String image, photographer;
+  final String image, photographer,photographerUrl;
 
   @override
   _ImageDetailState createState() => _ImageDetailState();
@@ -136,10 +138,28 @@ class _ImageDetailState extends State<ImageDetail> {
                       color: Color(0xff1C1B1B).withOpacity(0.7),
                       borderRadius:
                           BorderRadius.only(bottomLeft: Radius.circular(20), topLeft: Radius.circular(20))),
-                  child: Text(
-                    "By \n" + widget.photographer.toString(),
-                    style: Theme.of(context).textTheme.caption.apply(color: Colors.white),
-                    textAlign: TextAlign.end,
+                  child: new RichText(
+                    text: new TextSpan(
+                      children: [
+                        new TextSpan(
+                          text: 'By\n',
+                          style: Theme.of(context).textTheme.caption.apply(color: Colors.white),
+                        ),
+                        new TextSpan(
+                          text: widget.photographer.toString(),
+                          style: Theme.of(context).textTheme.caption.apply(color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              if (await canLaunch(widget.photographerUrl)) {
+                                await launch(
+                                  widget.photographerUrl,
+                                  forceSafariVC: false,
+                                );
+                              }
+                            },
+                        ),
+                      ],
+                    ),
                   ),
                 )
               ],

@@ -5,9 +5,9 @@ import 'package:wallpaper/pages/image_detail.dart';
 import 'package:wallpaper/utils/constants.dart';
 
 class ImageCard extends StatelessWidget {
-  const ImageCard({Key key, this.imageUrl, this.photographer, this.color, this.imageDetail}) : super(key: key);
+  const ImageCard({Key key, this.imageUrl, this.photographer, this.color, this.imageDetail, this.photographerUrl}) : super(key: key);
 
-  final String imageUrl, photographer, color, imageDetail;
+  final String imageUrl, photographer, color, imageDetail, photographerUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,7 @@ class ImageCard extends StatelessWidget {
                       builder: (context) => ImageDetail(
                         photographer: photographer,
                             image: imageDetail,
+                        photographerUrl: photographerUrl,
                           )));
             },
             child: ClipRRect(

@@ -72,9 +72,19 @@ class _HomePageState extends State<HomePage> {
         ),
         title: Padding(
           padding: const EdgeInsets.only(left: 20),
-          child: Text(
-            "MyWallpaperApp",
-            style: Theme.of(context).textTheme.headline6,
+          child: RichText(
+            text: new TextSpan(
+              children: [
+                new TextSpan(
+                  text: 'Pexelify',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                new TextSpan(
+                  text: ' .photos by pexels.com',
+                  style: Theme.of(context).textTheme.caption.apply(color: Colors.blueGrey,fontStyle: FontStyle.italic),
+                ),
+              ],
+            ),overflow: TextOverflow.ellipsis,
           ),
         ),
         actions: [
@@ -141,6 +151,7 @@ class _HomePageState extends State<HomePage> {
             imageUrl: myPhotos[index].src.medium,
             photographer: myPhotos[index].photographer,
             color: myPhotos[index].avgColor,
+            photographerUrl: myPhotos[index].photographerUrl
           ),
           staggeredTileBuilder: (index) => StaggeredTile.fit(1),
         ),

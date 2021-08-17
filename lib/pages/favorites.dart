@@ -104,6 +104,7 @@ class _CollectionsState extends State<Favorites> {
                 imageUrl: myPhotos[index].src.medium,
                 photographer: myPhotos[index].photographer,
                 color: myPhotos[index].avgColor,
+                photographerUrl: myPhotos[index].photographerUrl
               ),
               staggeredTileBuilder: (index) => StaggeredTile.fit(1),
             ),

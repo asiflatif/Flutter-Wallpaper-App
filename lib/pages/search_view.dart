@@ -4,7 +4,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wallpaper/api/api.dart';
 import 'package:wallpaper/models/photos_model.dart';
-import 'package:wallpaper/utils/constants.dart';
 import 'package:wallpaper/utils/responsive.dart';
 import 'package:wallpaper/widgets/image_card.dart';
 
@@ -95,6 +94,7 @@ class _SearchViewState extends State<SearchPage> {
               imageUrl: myPhotos[index].src.medium,
               photographer: myPhotos[index].photographer,
               color: myPhotos[index].avgColor,
+              photographerUrl: myPhotos[index].photographerUrl
             );
           },
           staggeredTileBuilder: (index) => StaggeredTile.fit(1),

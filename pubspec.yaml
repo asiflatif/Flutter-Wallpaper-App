@@ -21,7 +21,7 @@ dependencies:
   cached_network_image: ^3.1.0
   fluttertoast: ^8.0.8
   hexcolor: ^2.0.4
-
+  url_launcher: ^6.0.9
   wallpaper_manager: ^1.0.10
   flutter_cache_manager: ^3.1.2
   image_gallery_saver: ^1.6.9
