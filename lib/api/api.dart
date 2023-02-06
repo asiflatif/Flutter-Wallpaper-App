@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:wallpaper/models/photos_model.dart';
-import 'package:wallpaper/utils/constants_ignore.dart';
+// import 'package:wallpaper/utils/constants_ignore.dart';
 import 'package:http/http.dart' as http;
 
 Future<PhotosModel> getRandomWallpaper(String per_page, String keywords, String page_no) async {

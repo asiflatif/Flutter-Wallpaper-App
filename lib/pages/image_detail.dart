@@ -240,10 +240,11 @@ class _ImageDetailState extends State<ImageDetail> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                setWallpaperFromFile(WallpaperManager.HOME_SCREEN);
+                               // setWallpaperFromFile(WallpaperManager.HOME_SCREEN);
+                                setWallpaperDialog();
                               }),
                           Text(
-                            "Set as Wallpaper",
+                            "Set Wallpaper",
                             style: Theme.of(context).textTheme.caption.apply(color: Colors.white),
                             textAlign: TextAlign.center,
                           )
@@ -257,6 +258,83 @@ class _ImageDetailState extends State<ImageDetail> {
           ),
         ],
       ),
+    );
+  }
+  
+  void setWallpaperDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Set wallpaper',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  'Home Screen',
+                  style: TextStyle(color: Colors.black),
+                ),
+                leading: Icon(
+                  Icons.home,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  setWallpaperFromFile(WallpaperManager.HOME_SCREEN);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Setting Wallpaper')));
+                  
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Lock Screen',
+                  style: TextStyle(color: Colors.black),
+                ),
+                leading: Icon(
+                  Icons.lock,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  setWallpaperFromFile(WallpaperManager.LOCK_SCREEN);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Setting Wallpaper')));
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Both',
+                  style: TextStyle(color: Colors.black),
+                ),
+                leading: Icon(
+                  Icons.phone_android,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  setWallpaperFromFile(WallpaperManager.BOTH_SCREENS);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Setting Wallpaper')));
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
