@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:wallpaper/models/category_model.dart';
 
-var category = [
+const List<String> category = [
   "Nature",
   "Beach",
   "Dark",
@@ -18,7 +18,7 @@ var category = [
 ];
 
 List<CategoryModel> categories() {
-  List<CategoryModel> myCategories = new List();
+  final List<CategoryModel> myCategories = <CategoryModel>[];
 
   myCategories.add(CategoryModel(category[0],
       "https://images.pexels.com/photos/34950/pexels-photo.jpg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"));

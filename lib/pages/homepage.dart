@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,39 +8,48 @@ import 'package:wallpaper/utils/responsive.dart';
 import 'package:wallpaper/widgets/image_card.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  ScrollController _scrollController;
-  Random random = new Random();
+  late final ScrollController _scrollController;
   int page = 1;
 
   bool closeSearch = true;
   String category = "nature";
-  TextEditingController searchController = new TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  final List<Photos> myPhotos = <Photos>[];
 
   @override
   void initState() {
-    _scrollController = new ScrollController(initialScrollOffset: 5.0)..addListener(_scrollListener);
+    _scrollController = ScrollController(initialScrollOffset: 5.0)
+      ..addListener(_scrollListener);
     fetchPhotos();
     super.initState();
   }
-  List<Photos> myPhotos = new List();
-  fetchPhotos() async {
-    var response = await getRandomWallpaper("5", category, page.toString());
-    response.photos.forEach((element) {
-      myPhotos.add(element);
-    });
-    setState(() {});
+
+  Future<void> fetchPhotos() async {
+    try {
+      final response = await getRandomWallpaper("5", category, page.toString());
+      if (!mounted) return;
+      setState(() {
+        myPhotos.addAll(response.photos);
+      });
+    } catch (e) {
+      if (!mounted) return;
+      Fluttertoast.showToast(msg: "Could not load wallpapers");
+    }
   }
 
-  _scrollListener() {
+  void _scrollListener() {
     setState(() {
       closeSearch = true;
     });
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       page++;
       fetchPhotos();
@@ -59,13 +65,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 65,
-        backgroundColor: Theme.of(context).cardColor.withOpacity(0.8),
-        shape: RoundedRectangleBorder(
+        backgroundColor: theme.cardColor.withValues(alpha: 0.8),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(50),
           ),
@@ -73,87 +80,107 @@ class _HomePageState extends State<HomePage> {
         title: Padding(
           padding: const EdgeInsets.only(left: 20),
           child: RichText(
-            text: new TextSpan(
+            text: TextSpan(
               children: [
-                new TextSpan(
+                TextSpan(
                   text: 'Pexelify',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: theme.textTheme.titleLarge,
                 ),
-                new TextSpan(
+                TextSpan(
                   text: ' .photos by pexels.com',
-                  style: Theme.of(context).textTheme.caption.apply(color: Colors.blueGrey,fontStyle: FontStyle.italic),
+                  style: theme.textTheme.bodySmall?.apply(
+                    color: Colors.blueGrey,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ],
-            ),overflow: TextOverflow.ellipsis,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         actions: [
           AnimatedCrossFade(
-              firstChild: Container(
-                margin: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: IconButton(
-                    padding: EdgeInsets.only(right: 30),
-                    icon: Icon(Icons.search, size: 30),
-                    onPressed: () {
-                      setState(() {
-                        closeSearch = false;
-                      });
-                    }),
+            firstChild: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: IconButton(
+                padding: const EdgeInsets.only(right: 30),
+                icon: const Icon(Icons.search, size: 30),
+                onPressed: () {
+                  setState(() {
+                    closeSearch = false;
+                  });
+                },
               ),
-              secondChild: Container(
-                margin: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                width: MediaQuery.of(context).size.width * 0.5,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                        child: TextField(
+            ),
+            secondChild: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: MediaQuery.of(context).size.width * 0.5,
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
                       textInputAction: TextInputAction.search,
                       onSubmitted: (String value) {
                         if (value.trim().isEmpty) {
-                          Fluttertoast.showToast(msg: "Search field cannot be empty");
+                          Fluttertoast.showToast(
+                              msg: "Search field cannot be empty");
                         } else {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage(
-                                        keyword: searchController.text,
-                                      )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchPage(
+                                keyword: searchController.text,
+                              ),
+                            ),
+                          );
                         }
                       },
                       controller: searchController,
-                      decoration: InputDecoration(hintText: "search wallpapers", border: InputBorder.none),
-                    )),
-                  ],
-                ),
+                      decoration: const InputDecoration(
+                        hintText: "search wallpapers",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              crossFadeState: closeSearch ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-              duration: const Duration(milliseconds: 400))
+            ),
+            crossFadeState: closeSearch
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 400),
+          )
         ],
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 10),
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: StaggeredGridView.countBuilder(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: MasonryGridView.count(
           controller: _scrollController,
           primary: false,
           crossAxisCount: Responsive.isMobile(context) ? 2 : 3,
           mainAxisSpacing: 15,
           crossAxisSpacing: 15,
           itemCount: myPhotos.length,
-          itemBuilder: (context, index) => ImageCard(
-            imageDetail: Responsive.isMobile(context)? myPhotos[index].src.large2x : myPhotos[index].src.landscape,
-            imageUrl: myPhotos[index].src.medium,
-            photographer: myPhotos[index].photographer,
-            color: myPhotos[index].avgColor,
-            photographerUrl: myPhotos[index].photographerUrl
-          ),
-          staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+          itemBuilder: (context, index) {
+            final photo = myPhotos[index];
+            return ImageCard(
+              imageDetail: (Responsive.isMobile(context)
+                      ? photo.src?.large2x
+                      : photo.src?.landscape) ??
+                  '',
+              imageUrl: photo.src?.medium ?? '',
+              photographer: photo.photographer ?? 'Unknown',
+              color: photo.avgColor ?? '#9E9E9E',
+              photographerUrl: photo.photographerUrl ?? '',
+            );
+          },
         ),
       ),
     );

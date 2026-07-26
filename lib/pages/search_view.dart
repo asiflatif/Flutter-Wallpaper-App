@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,40 +9,47 @@ import 'package:wallpaper/widgets/image_card.dart';
 class SearchPage extends StatefulWidget {
   final String keyword;
 
-  const SearchPage({Key key, this.keyword}) : super(key: key);
+  const SearchPage({super.key, required this.keyword});
 
   @override
-  _SearchViewState createState() => _SearchViewState();
+  State<SearchPage> createState() => _SearchViewState();
 }
 
 class _SearchViewState extends State<SearchPage> {
-  ScrollController _scrollController;
-  List<Photos> myPhotos = new List();
+  late final ScrollController _scrollController;
+  final List<Photos> myPhotos = <Photos>[];
   int page = 1;
 
   @override
   void initState() {
-    _scrollController = new ScrollController(initialScrollOffset: 5.0)..addListener(_scrollListener);
+    _scrollController = ScrollController(initialScrollOffset: 5.0)
+      ..addListener(_scrollListener);
     fetchPhotos();
     super.initState();
   }
 
-  fetchPhotos() async {
-    var response = await getRandomWallpaper("8", widget.keyword, page.toString());
-    response.photos.length != 0
-        ? response.photos.forEach((element) {
-            myPhotos.add(element);
-          })
-        : Fluttertoast.showToast(msg: "Search Keyword not valid");
-
-    setState(() {});
+  Future<void> fetchPhotos() async {
+    try {
+      final response =
+          await getRandomWallpaper("8", widget.keyword, page.toString());
+      if (!mounted) return;
+      if (response.photos.isEmpty) {
+        Fluttertoast.showToast(msg: "Search Keyword not valid");
+      }
+      setState(() {
+        myPhotos.addAll(response.photos);
+      });
+    } catch (e) {
+      if (!mounted) return;
+      Fluttertoast.showToast(msg: "Could not load wallpapers");
+    }
   }
 
-  _scrollListener() {
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+  void _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       page++;
-
       fetchPhotos();
     }
   }
@@ -56,14 +62,15 @@ class _SearchViewState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       appBar: AppBar(
         toolbarHeight: 65,
         elevation: 0,
-        backgroundColor: Theme.of(context).cardColor.withOpacity(0.8),
-        shape: RoundedRectangleBorder(
+        backgroundColor: theme.cardColor.withValues(alpha: 0.8),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(50),
           ),
@@ -72,15 +79,15 @@ class _SearchViewState extends State<SearchPage> {
           padding: const EdgeInsets.only(left: 20),
           child: Text(
             widget.keyword,
-            style: Theme.of(context).textTheme.headline5,
+            style: theme.textTheme.headlineSmall,
           ),
         ),
         centerTitle: true,
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 10),
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: StaggeredGridView.countBuilder(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: MasonryGridView.count(
           controller: _scrollController,
           primary: false,
           crossAxisCount: Responsive.isMobile(context) ? 2 : 3,
@@ -88,16 +95,18 @@ class _SearchViewState extends State<SearchPage> {
           crossAxisSpacing: 10,
           itemCount: myPhotos.length,
           itemBuilder: (context, index) {
+            final photo = myPhotos[index];
             return ImageCard(
-              imageDetail:
-                  Responsive.isMobile(context) ? myPhotos[index].src.large2x : myPhotos[index].src.landscape,
-              imageUrl: myPhotos[index].src.medium,
-              photographer: myPhotos[index].photographer,
-              color: myPhotos[index].avgColor,
-              photographerUrl: myPhotos[index].photographerUrl
+              imageDetail: (Responsive.isMobile(context)
+                      ? photo.src?.large2x
+                      : photo.src?.landscape) ??
+                  '',
+              imageUrl: photo.src?.medium ?? '',
+              photographer: photo.photographer ?? 'Unknown',
+              color: photo.avgColor ?? '#9E9E9E',
+              photographerUrl: photo.photographerUrl ?? '',
             );
           },
-          staggeredTileBuilder: (index) => StaggeredTile.fit(1),
         ),
       ),
     );

@@ -1,0 +1,7 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # The project ships a camelCase widget filename that would be noisy to
+    # rename across every import right now.
+    file_names: false

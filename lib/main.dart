@@ -4,10 +4,12 @@ import 'package:wallpaper/pages/home.dart';
 import 'package:wallpaper/provider/theme_provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
           theme: MyThemes.lightTheme,
           darkTheme: MyThemes.darkTheme,
           routes: {
-            '/': (context) => Home(),
+            '/': (context) => const Home(),
           },
           initialRoute: '/',
         );

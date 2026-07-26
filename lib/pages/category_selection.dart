@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wallpaper/utils/constants.dart';
 import 'package:wallpaper/utils/responsive.dart';
 import 'package:wallpaper/widgets/changeThemeButtonWidget.dart';
 
 class CategorySelection extends StatefulWidget {
-  const CategorySelection({Key key}) : super(key: key);
+  const CategorySelection({super.key});
 
   @override
-  _CategorySelectionState createState() => _CategorySelectionState();
+  State<CategorySelection> createState() => _CategorySelectionState();
 }
 
 class _CategorySelectionState extends State<CategorySelection> {
@@ -21,7 +20,7 @@ class _CategorySelectionState extends State<CategorySelection> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        leading: ChangeThemeButtonWidget(),
+        leading: const ChangeThemeButtonWidget(),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -32,46 +31,46 @@ class _CategorySelectionState extends State<CategorySelection> {
             children: [
               Text(
                 "Welcome!",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
                   "Please select any three categories to get started",
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
               ),
               Responsive.isMobile(context)
-                  ? categories(context)
+                  ? categoryGrid(context)
                   : Center(
-                      child: Container(
+                      child: SizedBox(
                         width: size.width * 0.90,
-                        child: categories(context),
+                        child: categoryGrid(context),
                       ),
                     ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: ElevatedButton(
                   onPressed: selected.length < 3 ? null : _saveCategory,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("Get Started"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(Icons.arrow_right_alt)
-                    ],
-                  ),
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 40)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                    ),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                     ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Get Started"),
+                      SizedBox(width: 10),
+                      Icon(Icons.arrow_right_alt)
+                    ],
                   ),
                 ),
               )
@@ -83,49 +82,49 @@ class _CategorySelectionState extends State<CategorySelection> {
   }
 
   void _saveCategory() {
-    print("Clicked");
+    debugPrint("Clicked");
   }
 
-  Widget categories(BuildContext context) {
+  Widget categoryGrid(BuildContext context) {
     return GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        shrinkWrap: true,
-        itemCount: 8,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 2,
-          crossAxisCount: Responsive.isMobile(context) ? 2 : 4,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
-          mainAxisExtent: 80,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      shrinkWrap: true,
+      itemCount: 8,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        childAspectRatio: 2,
+        crossAxisCount: Responsive.isMobile(context) ? 2 : 4,
+        crossAxisSpacing: 15,
+        mainAxisSpacing: 15,
+        mainAxisExtent: 80,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
               if (selected.contains(index)) {
-                setState(() {
-                  selected.removeWhere((element) => element == index);
-                });
+                selected.removeWhere((element) => element == index);
               } else {
-                setState(() {
-                  selected.add(index);
-                });
+                selected.add(index);
               }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: selected.contains(index)
-                    ? Theme.of(context).cardColor
-                    : Theme.of(context).cardColor.withOpacity(0.3),
-              ),
-              child: Center(
-                  child: Text(
-                category[index],
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: selected.contains(index)
+                  ? Theme.of(context).cardColor
+                  : Theme.of(context).cardColor.withValues(alpha: 0.3),
             ),
-          );
-        });
+            child: Center(
+              child: Text(
+                category[index],
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

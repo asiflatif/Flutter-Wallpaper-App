@@ -23,6 +23,7 @@
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -45,3 +46,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Signing material — never commit these
+*.jks
+*.keystore
+**/key.properties
+android/key.properties
+android/app/upload-keystore.jks
+
+# Local tooling config
+android/local.properties
+**/ios/Pods/
+**/ios/.symlinks/
