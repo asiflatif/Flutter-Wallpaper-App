@@ -33,6 +33,8 @@
 /build/
 /web
 /lib/utils/constants_ignore.dart
+changelog.txt
+
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -58,3 +60,6 @@ android/app/upload-keystore.jks
 android/local.properties
 **/ios/Pods/
 **/ios/.symlinks/
+
+# Claude Code
+.claude/

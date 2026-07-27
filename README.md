@@ -115,6 +115,28 @@ on Android 10 and above.
 
 ---
 
+## 📋 Release Checklist
+
+Before building a release bundle for the Play Store, verify the following:
+
+- [ ] **API key** — Pexels API key is passed via `--dart-define=PEXELS_API_KEY=...` (never hardcode in source)
+- [ ] **Signing config** — `android/key.properties` exists with valid keystore path, alias, and passwords (see `key.properties.example`)
+- [ ] **Keystore file** — the `.jks` file referenced in `key.properties` is accessible on disk
+- [ ] **Version bump** — `version` in `pubspec.yaml` has a new version name and code (e.g. `1.2.0+5`); the version code must be higher than any previously uploaded bundle
+- [ ] **Package name** — `applicationId` in `android/app/build.gradle` matches the Play Console listing (`com.ablinfotech.pexelify`)
+- [ ] **No secrets in repo** — `constants_ignore.dart`, `key.properties`, `.jks` files, and `.claude/` are all gitignored
+- [ ] **Run `flutter analyze`** — ensure no warnings or errors before release
+- [ ] **Test on device** — install and verify the release build on a real device before uploading
+
+```bash
+# Build the signed app bundle
+flutter build appbundle --release --dart-define=PEXELS_API_KEY=your_key_here
+```
+
+The output will be at `build/app/outputs/bundle/release/app-release.aab`.
+
+---
+
 ## 🤝 Contributing
 
 Issues and pull requests are welcome. Please run `flutter analyze` before

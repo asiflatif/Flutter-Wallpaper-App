@@ -1,0 +1,3 @@
+// Copy this file to constants_ignore.dart and replace with your actual API key.
+// Do NOT commit constants_ignore.dart — it is gitignored.
+String apiKEY = "your_pexels_api_key_here";
